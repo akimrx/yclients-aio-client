@@ -18,9 +18,9 @@ fake_response_post_auth = {
         "login": "79161001010",
         "email": "test@test.com",
         "avatar": "https://assets.yclients.com/general/0/01/123456789098765_12345678909876.png",
-        "is_approved": True
+        "is_approved": True,
     },
-    "meta": {}
+    "meta": {},
 }
 
 fake_response_post_booking_auth = {
@@ -32,11 +32,10 @@ fake_response_post_booking_auth = {
         "phone": "79161001010",
         "login": "79161001010",
         "email": "test@test.com",
-        "avatar": "https://assets.yclients.com/general/0/01/123456789098765_12345678909876.png"
+        "avatar": "https://assets.yclients.com/general/0/01/123456789098765_12345678909876.png",
     },
-    "meta": {}
+    "meta": {},
 }
-
 
 
 class MockWebClient(ApiRequestsStrategy):
@@ -56,9 +55,7 @@ class MockWebClient(ApiRequestsStrategy):
     def _parse_response(
         parent: object, status: int, response_headers: dict, response: Any, response_data_model: Any
     ) -> Any:
-        return AsyncWebClient._parse_response(
-            parent, status, response_headers, response, response_data_model
-        )
+        return AsyncWebClient._parse_response(parent, status, response_headers, response, response_data_model)
 
     async def request(
         self,
@@ -70,7 +67,7 @@ class MockWebClient(ApiRequestsStrategy):
         data: Any = None,
         json: dict | None = None,
         headers: dict | None = None,
-        response_data_model: Any = None
+        response_data_model: Any = None,
     ) -> YclientsGenericModel | dict | Any:
         """Make request to Fake YCLIENTS API."""
         match (method, url):
@@ -88,18 +85,14 @@ class MockWebClient(ApiRequestsStrategy):
             status=200,
             response_headers={"X-Request-ID": "mock-request-id"},
             response=response,
-            response_data_model=response_data_model
+            response_data_model=response_data_model,
         )
-
 
 
 @pytest.fixture(scope="session")
 async def client() -> MockWebClient:
     """Returns Mock YCLIENTS client for testing."""
-    return AsyncYclientsClient(
-        partner_token="fake_token",
-        api_client=MockWebClient
-    )
+    return AsyncYclientsClient(partner_token="fake_token", api_client=MockWebClient)
 
 
 @pytest.fixture(scope="session")

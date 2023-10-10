@@ -39,4 +39,3 @@ class YclientsAuthResponse(YclientsGenericModel):
 
 class YclientsPartnerAuthResponse(YclientsGenericModel):
     data: YclientsPartnerAuth
-

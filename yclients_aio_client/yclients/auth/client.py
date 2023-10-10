@@ -24,12 +24,7 @@ class YclientsAuthClient(BaseClient):
         return self._parent._api_client
 
     # TODO: caching + invalidation
-    async def get_user_token(
-        self,
-        login: str,
-        password: str,
-        **kwargs
-    ) -> YclientsPartnerAuthResponse:
+    async def get_user_token(self, login: str, password: str, **kwargs) -> YclientsPartnerAuthResponse:
         """Authenticate staff (employee) YCLIENTS user.
 
         Auth required:
@@ -39,20 +34,9 @@ class YclientsAuthClient(BaseClient):
         """
         url = f"{c.YCLIENTS_API_URL}/auth"
         data = {"login": login, "password": password}
-        return await self._api.request(
-            "post",
-            url,
-            json=data,
-            response_data_model=YclientsPartnerAuth,
-            **kwargs
-        )
+        return await self._api.request("post", url, json=data, response_data_model=YclientsPartnerAuth, **kwargs)
 
-    async def get_client_token_by_password(
-        self,
-        login: str,
-        password: str,
-        **kwargs
-    ) -> YclientsAuthResponse:
+    async def get_client_token_by_password(self, login: str, password: str, **kwargs) -> YclientsAuthResponse:
         """Authenticate booking user via user:password pair.
 
         Auth required:
@@ -62,23 +46,13 @@ class YclientsAuthClient(BaseClient):
         """
         url = f"{c.YCLIENTS_API_URL}/booking/auth"
         data = {"login": login, "password": password}
-        return await self._api.request(
-            "post",
-            url,
-            json=data,
-            response_data_model=YclientsBaseAuth,
-            **kwargs
-        )
+        return await self._api.request("post", url, json=data, response_data_model=YclientsBaseAuth, **kwargs)
 
     async def generate_sms_code(
-            self,
-            phone: str,
-            fullname: str,
-            company_id: str | None = None,
-            **kwargs
+        self, phone: str, fullname: str, company_id: str | None = None, **kwargs
     ) -> YclientsGenericModel:
         """Generate SMS-code for authenticate booking user.
-        
+
         Auth required:
             * Partner token
 
@@ -87,19 +61,9 @@ class YclientsAuthClient(BaseClient):
         company = validate_company_id(self._parent._main_company_id, company_id)
         url = f"{c.YCLIENTS_API_URL}/book_code/{company}"
         data = {"phone": phone, "fullname": fullname}
-        return await self._api.request(
-            "post",
-            url,
-            json=data,
-            **kwargs
-        )
+        return await self._api.request("post", url, json=data, **kwargs)
 
-    async def get_client_token_by_sms_code(
-        self,
-        phone: str,
-        code: str,
-        **kwargs
-    ) -> YclientsAuthResponse:
+    async def get_client_token_by_sms_code(self, phone: str, code: str, **kwargs) -> YclientsAuthResponse:
         """Authenticate booking user via SMS-code.
 
         Auth required:
@@ -109,10 +73,4 @@ class YclientsAuthClient(BaseClient):
         """
         url = f"{c.YCLIENTS_API_URL}/user/auth"
         data = {"phone": phone, "code": code}
-        return await self._api.request(
-            "post",
-            url,
-            json=data,
-            response_data_model=YclientsBaseAuth,
-            **kwargs
-        )
+        return await self._api.request("post", url, json=data, response_data_model=YclientsBaseAuth, **kwargs)

@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class AsyncWebClient(ApiRequestsStrategy):
     """HTTP Web client based on aiohttp library.
-    
+
     Args:
         timeout (int): API requests timeout.
         raise_client_errors (bool): Raise exceptions for responses with 4xx HTTP-code.
@@ -44,10 +44,7 @@ class AsyncWebClient(ApiRequestsStrategy):
 
     def _set_base_headers(self):
         """Set basic headers required by YCLIENTS."""
-        self._headers.update({
-            "Content-Type": "application/json",
-            "Accept": "application/vnd.api.v2+json"
-        })
+        self._headers.update({"Content-Type": "application/json", "Accept": "application/vnd.api.v2+json"})
 
     def set_auth_headers(self, partner_token: str):
         """Set authorization headers to client."""
@@ -64,11 +61,7 @@ class AsyncWebClient(ApiRequestsStrategy):
 
     @staticmethod
     def _parse_response(
-        parent: object,
-        status: int,
-        response_headers: dict,
-        response: Any,
-        response_data_model: Any
+        parent: object, status: int, response_headers: dict, response: Any, response_data_model: Any
     ) -> YclientsGenericModel | Any:
         """Convert response from YCLIENTS API to provided response model."""
         if response_data_model is None:
@@ -97,7 +90,7 @@ class AsyncWebClient(ApiRequestsStrategy):
             data=parsed_data,
             meta=response.get("meta"),
             status=status,
-            response_headers=response_headers
+            response_headers=response_headers,
         )
 
     @backoff(
@@ -105,7 +98,7 @@ class AsyncWebClient(ApiRequestsStrategy):
         max_tries=c.backoff_settings.max_tries,
         jitter=c.backoff_settings.jitter,
         base_delay=c.backoff_settings.base_delay,
-        expo_factor=c.backoff_settings.expo_factor
+        expo_factor=c.backoff_settings.expo_factor,
     )
     @debug_log
     async def request(
@@ -118,7 +111,7 @@ class AsyncWebClient(ApiRequestsStrategy):
         data: Any = None,
         json: dict | None = None,
         headers: dict | None = None,
-        response_data_model: Any = None
+        response_data_model: Any = None,
     ) -> YclientsGenericModel | dict | Any:
         """Async wrapper for make HTTP requests based on aiohttp."""
         validate_method_is_allowed(method)
@@ -136,6 +129,7 @@ class AsyncWebClient(ApiRequestsStrategy):
         async with aiohttp.ClientSession() as session:
             logger.debug(f"Trying make request {method.upper()} {url} params={params}")
             start_time = time.time()
+            # fmt: off
             async with session.request(
                 method,
                 url,
@@ -144,7 +138,7 @@ class AsyncWebClient(ApiRequestsStrategy):
                 json=json,
                 headers=headers,
                 timeout=self._timeout
-            ) as response:
+            ) as response:  # fmt: on
                 try:
                     result = await response.json()
                 except (json.JSONDecodeError, ContentTypeError):
@@ -152,10 +146,7 @@ class AsyncWebClient(ApiRequestsStrategy):
                 finally:
                     await session.close()
                     elapsed = time.time() - start_time
-                    logger.debug(
-                        f"Request with ID {response.headers.get('x-request-id')} "
-                        f"completed in {elapsed:.3f}s"
-                    )
+                    logger.debug(f"Request with ID {response.headers.get('x-request-id')} completed in {elapsed:.3f}s")
 
         if response.status >= 500:
             raise YclientsServerError(
@@ -173,5 +164,5 @@ class AsyncWebClient(ApiRequestsStrategy):
             status=response.status,
             response=result,
             response_headers=response.headers,
-            response_data_model=response_data_model
+            response_data_model=response_data_model,
         )

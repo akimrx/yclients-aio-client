@@ -13,9 +13,10 @@ def backoff(
     base_delay: int | float = 0.5,
     expo_factor: int | float = 2.5,
     max_tries: int = 3,
-    jitter: bool = False
+    jitter: bool = False,
 ) -> Coroutine:
     """Decorator for backoff retry function/method calls."""
+
     def retry_decorator(func: Coroutine):
         @wraps(func)
         async def func_retry(*args, **kwargs):
@@ -40,12 +41,15 @@ def backoff(
                     else:
                         await asyncio.sleep(delay)
                     delay *= expo_factor
+
         return func_retry
+
     return retry_decorator
 
 
 def debug_log(func: Coroutine) -> Coroutine:
     """Decorator for debug log async function results."""
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         func_name = func.__qualname__
@@ -60,4 +64,5 @@ def debug_log(func: Coroutine) -> Coroutine:
         except Exception as e:
             logger.debug(f"Func {func_name} failed with exception: {e}")
             raise
+
     return wrapper

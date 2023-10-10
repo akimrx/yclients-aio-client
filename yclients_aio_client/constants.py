@@ -15,13 +15,14 @@ ALLOWED_HTTP_METHODS = (
 
 class YclientsClientBackoffSettings(BaseSettings):
     """Backoff settings for AsyncApiAdapter.
-    
+
     Supports environment variables:
         * YCLIENTS_BACKOFF_MAX_TRIES=:type int:
         * YCLIENTS_BACKOFF_JITTER=:type bool:
         * YCLIENTS_BACKOFF_BASE_DELAY=:type int, type float:
         * YCLIENTS_BACKOFF_EXPO_FACTOR=:type int, type float:
     """
+
     max_tries: int = 3
     jitter: bool = True
     base_delay: int | float = 0.5

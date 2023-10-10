@@ -31,14 +31,14 @@ class AsyncYclientsClient(BaseClient):
         main_company_id: str | None = None,
         timeout: int = 5,
         api_client: ApiRequestsStrategy = AsyncWebClient,
-        raise_client_errors: bool = True
+        raise_client_errors: bool = True,
     ) -> None:
         self._partner_token = partner_token
         self._main_company_id = main_company_id
         self._api_client = api_client(
             timeout=timeout,
             raise_client_errors=raise_client_errors,
-            parent=self  # hack: shortcut for self object manipulate via injected parent facade
+            parent=self,  # hack: shortcut for self object manipulate via injected parent facade
         )
         self._api_client.set_auth_headers(partner_token=self._partner_token)
 

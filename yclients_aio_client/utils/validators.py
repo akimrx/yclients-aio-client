@@ -16,7 +16,4 @@ def validate_company_id(main_company: str | None, arg_company: str | None) -> st
 
 def validate_method_is_allowed(method: str):
     if not isinstance(method, str) or method.lower() not in c.ALLOWED_HTTP_METHODS:
-        raise MethodNotAllowed(
-            f"Bad HTTP request method received. "
-            f"Allowed methods: {c.ALLOWED_HTTP_METHODS}"
-        )
+        raise MethodNotAllowed(f"Bad HTTP request method received. Allowed methods: {c.ALLOWED_HTTP_METHODS}")

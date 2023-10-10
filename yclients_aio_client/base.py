@@ -4,7 +4,6 @@ from typing import Any
 
 
 class ApiRequestsStrategy(ABC):
-
     @abstractmethod
     def set_auth_headers(self, partner_token: str | None = None):
         """Method for set auth headers to HTTP Client."""
@@ -24,7 +23,7 @@ class ApiRequestsStrategy(ABC):
         data: Any = None,
         json: dict | None = None,
         headers: dict | None = None,
-        response_data_model: Any = None
+        response_data_model: Any = None,
     ) -> Any:
         """Method for make API requests."""
 
@@ -38,7 +37,7 @@ class BaseClient:
         partner_token: str | None = None,
         main_company_id: str | None = None,
         timeout: int = 5,
-        raise_client_erros: bool = True
+        raise_client_erros: bool = True,
     ) -> None:
         self._api_client = api_client
         self._partner_token = partner_token
@@ -53,4 +52,6 @@ class YclientsGenericModel(BaseModel):
     meta: Any
     status: int
     response_headers: dict = {}
-    parent: Any = Field(..., repr=False, exclude=True, init=False)  # hack: shortcut for self object manipulate via injected parent facade
+    parent: Any = Field(
+        ..., repr=False, exclude=True, init=False
+    )  # hack: shortcut for self object manipulate via injected parent facade
