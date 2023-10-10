@@ -149,15 +149,15 @@ class AsyncWebClient(ApiRequestsStrategy):
                     logger.debug(f"Request with ID {response.headers.get('x-request-id')} completed in {elapsed:.3f}s")
 
         if response.status >= 500:
-            raise YclientsServerError(
-                f"YCLIENTS Server error. Method: {method.upper()}, URL: {url}, "  # pylint: disable=E1120
+            raise YclientsServerError(  # pylint: disable=E1120
+                f"YCLIENTS Server error. Method: {method.upper()}, URL: {url}, "
                 f"Params: {params}, HTTP Code: {str(response.status)}, "
                 f"X-Request-ID: {response.headers.get('x-request-id')}"
             )
         elif response.status == 429:
-            raise YclientsRateLimitted(
+            raise YclientsRateLimitted(  # pylint: disable=E1120
                 f"Requests rate limit reached for {method.upper()} {url}, details: {result}"
-            )  # pylint: disable=E1120
+            )
         elif response.status >= 400 and self._raise_client_errors:
             raise HttpClientError(method, url, params, response, result)
 
