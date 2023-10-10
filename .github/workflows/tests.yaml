@@ -14,8 +14,8 @@ on:
     branches:
       - master
   schedule:
-    # Run monday and friday morning at 03:07 - odd time to spread load on GitHub Actions
-    - cron: '7 3 * * 1,5'
+    # Run at 04:20 on Sunday
+    - cron: '20 4 * * 7'
 
 jobs:
   pytest:
@@ -62,6 +62,8 @@ jobs:
 
       - name: Submit coverage
         uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           env_vars: OS,PYTHON
           name: ${{ matrix.os }}-${{ matrix.python-version }}
