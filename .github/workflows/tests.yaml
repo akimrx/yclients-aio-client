@@ -1,0 +1,60 @@
+name: Unit Tests
+on:
+  pull_request:
+    paths:
+      - "yclients_aio_client/**"
+      - "tests/**"
+    branches:
+      - master
+  push:
+    paths:
+      - "yclients_aio_client/**"
+      - "tests/**"
+    branches:
+      - master
+  schedule:
+    # Run monday and friday morning at 03:07 - odd time to spread load on GitHub Actions
+    - cron: '7 3 * * 1,5'
+
+jobs:
+  pytest:
+    name: pytest
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        python-version: ['3.10']
+        os: [ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: '**/requirements*.txt'
+      - name: Install dependencies
+        run: |
+          python -W ignore -m pip install --upgrade pip
+          python -W ignore -m pip install -U pytest-cov
+          python -W ignore -m pip install -r requirements.txt
+          python -W ignore -m pip install -r requirements-dev.txt
+          python -W ignore -m pip install pytest-xdist[psutil]
+
+      - name: Test with pytest
+        run: |
+          make test
+        env:
+          JOB_INDEX: ${{ strategy.job-index }}
+
+      - name: Test Summary
+        id: test_summary
+        uses: test-summary/action@v2.1
+        if: always()  # always run, even if tests fail
+
+      - name: Submit coverage
+        uses: codecov/codecov-action@v3
+        with:
+          env_vars: OS,PYTHON
+          name: ${{ matrix.os }}-${{ matrix.python-version }}
+          fail_ci_if_error: true

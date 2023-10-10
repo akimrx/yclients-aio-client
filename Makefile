@@ -30,7 +30,7 @@ lint-apply:
 	@black yclients_aio_client tests
 
 test:
-	@pytest -vv --cov=src
+	@pytest -vv --cov=yclients_aio_client
 
 tests: test
 
