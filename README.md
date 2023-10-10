@@ -5,7 +5,7 @@
 [![Codecov](https://codecov.io/gh/akimrx/yclients-aio-client/branch/master/graph/badge.svg)](https://app.codecov.io/gh/akimrx/yclients-aio-client)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0fcaff61147141e496f9843a13295242)](https://app.codacy.com/gh/akimrx/yclients-aio-client/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Tests](https://github.com/akimrx/yclients-aio-client/workflows/Tests/badge.svg)](https://github.com/akimrx/yclients-aio-client)
-[![Build](https://github.com/akimrx/yclients-aio-client/workflows/Build/badge.svg)](https://github.com/akimrx/yclients-aio-client)
+[![Build](https://github.com/akimrx/yclients-aio-client/workflows/Publish/badge.svg)](https://github.com/akimrx/yclients-aio-client)
 
 **Important. This library is not official!**
 
