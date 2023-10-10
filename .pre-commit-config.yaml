@@ -1,0 +1,41 @@
+default_stages:
+  - pre-commit
+
+default_language_version:
+    python: python3.10
+
+exclude: ".*(MD|md)$"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+        exclude: "helm"
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: requirements-txt-fixer
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        args: ["-l", "119", "-t", "py310"]
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.1
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: remove-tabs
+        exclude: "^Makefile$"
+        args: ["--whitespaces-count", "4"]
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+    - id: bandit
+      exclude: "tests/"
