@@ -14,8 +14,7 @@ on:
     branches:
       - master
   schedule:
-    # Run at 04:20 on Sunday
-    - cron: '20 4 * * 7'
+    - cron: '20 4 * * 6'
 
 jobs:
   pytest:
