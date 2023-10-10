@@ -40,7 +40,7 @@ requirements = requirements()
 
 setup(
     name="yclients-aio-client",
-    version=metadata.get("version"),
+    version="{{PKG_VERSION}}",
     author=metadata.get("author"),
     author_email=metadata.get("author_email"),
     license=metadata.get("license"),
@@ -51,9 +51,11 @@ setup(
     url=metadata.get("url"),
     keywords=metadata.get("keywords"),
     classifiers=[
-        "Programming Language :: Python :: 3.10",
-        "Operating System :: OS Independent",
         "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3.10",
+        "Operating System :: Unix",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
     ],
     packages=packages,
     install_requires=requirements,

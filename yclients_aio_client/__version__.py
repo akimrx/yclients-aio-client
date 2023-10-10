@@ -1,4 +1,3 @@
-version = "0.0.1"
 author = "akimrx"
 author_email = "akimstrong@yandex.ru"
 license = "MIT"  # pylint: disable=W0622
