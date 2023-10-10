@@ -46,11 +46,11 @@ class AsyncWebClient(ApiRequestsStrategy):
         """Set basic headers required by YCLIENTS."""
         self._headers.update({"Content-Type": "application/json", "Accept": "application/vnd.api.v2+json"})
 
-    def set_auth_headers(self, partner_token: str):
+    def set_auth_headers(self, partner_token: str):  # pylint: disable=W0222
         """Set authorization headers to client."""
         self._headers.update({"Authorization": f"Bearer {partner_token}"})
 
-    def set_custom_global_headers(self, headers: dict = {}) -> None:
+    def set_custom_global_headers(self, headers: dict = {}) -> None:  # pylint: disable=W0102
         """Set custom provided headers for all requests."""
         if headers:
             self._headers.update(headers)
@@ -150,12 +150,14 @@ class AsyncWebClient(ApiRequestsStrategy):
 
         if response.status >= 500:
             raise YclientsServerError(
-                f"YCLIENTS Server error. Method: {method.upper()}, URL: {url}, "
+                f"YCLIENTS Server error. Method: {method.upper()}, URL: {url}, "  # pylint: disable=E1120
                 f"Params: {params}, HTTP Code: {str(response.status)}, "
                 f"X-Request-ID: {response.headers.get('x-request-id')}"
             )
         elif response.status == 429:
-            raise YclientsRateLimitted(f"Requests rate limit reached for {method.upper()} {url}, details: {result}")
+            raise YclientsRateLimitted(
+                f"Requests rate limit reached for {method.upper()} {url}, details: {result}"
+            )  # pylint: disable=E1120
         elif response.status >= 400 and self._raise_client_errors:
             raise HttpClientError(method, url, params, response, result)
 

@@ -1,7 +1,7 @@
 version = "0.0.1"
 author = "akimrx"
 author_email = "akimstrong@yandex.ru"
-license = "MIT"
+license = "MIT"  # pylint: disable=W0622
 description = "Async client for YCLIENTS API"
 url = "https://github.com/akimrx/yclients-aio-client"
 keywords = [

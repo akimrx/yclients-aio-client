@@ -9,7 +9,7 @@ class ApiRequestsStrategy(ABC):
         """Method for set auth headers to HTTP Client."""
 
     @abstractmethod
-    def set_custom_global_headers(self, headers: dict = {}) -> None:
+    def set_custom_global_headers(self, headers: dict) -> None:
         """Set custom provided headers for all requests."""
 
     @abstractmethod
