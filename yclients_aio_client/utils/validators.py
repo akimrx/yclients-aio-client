@@ -1,4 +1,5 @@
-from yclients_aio_client.exceptions import EmptyCompanyError
+import yclients_aio_client.constants as c
+from yclients_aio_client.exceptions import EmptyCompanyError, MethodNotAllowed
 
 
 def validate_company_id(main_company: str | None, arg_company: str | None) -> str:
@@ -11,3 +12,11 @@ def validate_company_id(main_company: str | None, arg_company: str | None) -> st
 
     if main_company is not None:
         return main_company
+
+
+def validate_method_is_allowed(method: str):
+    if not isinstance(method, str) or method.lower() not in c.ALLOWED_HTTP_METHODS:
+        raise MethodNotAllowed(
+            f"Bad HTTP request method received. "
+            f"Allowed methods: {c.ALLOWED_HTTP_METHODS}"
+        )

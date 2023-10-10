@@ -8,11 +8,11 @@ import logging
 import yclients_aio_client.constants as c
 from yclients_aio_client.base import ApiRequestsStrategy, YclientsGenericModel
 from yclients_aio_client.utils.decorators import backoff, debug_log
+from yclients_aio_client.utils.validators import validate_method_is_allowed
 from yclients_aio_client.exceptions import (
     YclientsServerError,
     YclientsRateLimitted,
     HttpClientError,
-    MethodNotAllowed,
     UnparsableResponse,
 )
 
@@ -63,29 +63,45 @@ class AsyncWebClient(ApiRequestsStrategy):
         return reduce(lambda l, r: {**l, **r}, [self._headers, headers])
 
     @staticmethod
-    def _parse_response(parent: object, status: int, response_headers: dict, response: Any, response_data_model: Any):
+    def _parse_response(
+        parent: object,
+        status: int,
+        response_headers: dict,
+        response: Any,
+        response_data_model: Any
+    ) -> YclientsGenericModel | Any:
         """Convert response from YCLIENTS API to provided response model."""
-        if not isinstance(response, dict):  # TODO: list?
+        if response_data_model is None:
+            return response
+
+        if not isinstance(response, dict):
             raise UnparsableResponse(
                 f"Not JSON response from YCLIENS API. "
                 f"Status: {status}, Headers: {response_headers}, "
-                f"Response: {response}, Expected model: {response_data_model}"
+                f"Response: {response}, Expected model: {response_data_model}, "
+                f"Received response type: {type(response)}"
             )
 
-        if response_data_model is not None:
-            data = response.get("data", None)
-            return YclientsGenericModel(
-                parent=parent,
-                success=response.get("success"),
-                data=response_data_model(**data) if isinstance(data, dict) else data,  # TODO: lists support
-                meta=response.get("meta"),
-                status=status,
-                response_headers=response_headers
-            )
-        return response
+        data = response.get("data", None)
+        if isinstance(data, dict):
+            parsed_data = response_data_model(**data) if data else None
+        elif isinstance(data, list):
+            parsed_data = [response_data_model(**dict_) for dict_ in data]
+        else:
+            logger.warning(f"Strange data from YCLIENTS API: {type(data)}: {data}")
+            parsed_data = data
+
+        return YclientsGenericModel(
+            parent=parent,
+            success=response.get("success"),
+            data=parsed_data,
+            meta=response.get("meta"),
+            status=status,
+            response_headers=response_headers
+        )
 
     @backoff(
-        exceptions=(ClientConnectorError, YclientsServerError),  # FIXME: remove HttpClientError before release, just for test
+        exceptions=(ClientConnectorError, YclientsServerError),
         max_tries=c.backoff_settings.max_tries,
         jitter=c.backoff_settings.jitter,
         base_delay=c.backoff_settings.base_delay,
@@ -105,12 +121,7 @@ class AsyncWebClient(ApiRequestsStrategy):
         response_data_model: Any = None
     ) -> YclientsGenericModel | dict | Any:
         """Async wrapper for make HTTP requests based on aiohttp."""
-
-        if not isinstance(method, str) or method.lower() not in c.ALLOWED_HTTP_METHODS:
-            raise MethodNotAllowed(
-                f"Bad HTTP method received. "
-                f"Allowed methods: {c.ALLOWED_HTTP_METHODS}"
-            )
+        validate_method_is_allowed(method)
 
         if user_token is not None:
             authorization_headers = self._headers.get("Authorization")
