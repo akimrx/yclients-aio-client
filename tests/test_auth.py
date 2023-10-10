@@ -1,6 +1,9 @@
+from conftest import (
+    fake_response_post_auth,
+    fake_response_post_booking_auth,
+)
 from yclients_aio_client import AsyncYclientsClient
 from yclients_aio_client.base import YclientsGenericModel
-from yclients_aio_client.test import fake_auth
 from yclients_aio_client.yclients.auth.models import YclientsPartnerAuth, YclientsBaseAuth
 
 
@@ -11,7 +14,7 @@ async def test_create_user_token(client: AsyncYclientsClient) -> None:
     assert isinstance(response.parent, AsyncYclientsClient)
     assert response.response_headers.get("X-Request-ID") == "mock-request-id"
     assert response.status == 200
-    assert response.data.model_dump() == fake_auth.post_staff_user_auth_response["data"]
+    assert response.data.model_dump() == fake_response_post_auth["data"]
 
 
 async def test_create_booking_token_by_password(client: AsyncYclientsClient) -> None:
@@ -21,7 +24,7 @@ async def test_create_booking_token_by_password(client: AsyncYclientsClient) -> 
     assert isinstance(response.parent, AsyncYclientsClient)
     assert response.response_headers.get("X-Request-ID") == "mock-request-id"
     assert response.status == 200
-    assert response.data.model_dump() == fake_auth.post_booking_user_auth_response["data"]
+    assert response.data.model_dump() == fake_response_post_booking_auth["data"]
 
 
 async def test_create_booking_token_by_sms(client: AsyncYclientsClient) -> None:
@@ -31,4 +34,4 @@ async def test_create_booking_token_by_sms(client: AsyncYclientsClient) -> None:
     assert isinstance(response.parent, AsyncYclientsClient)
     assert response.response_headers.get("X-Request-ID") == "mock-request-id"
     assert response.status == 200
-    assert response.data.model_dump() == fake_auth.post_booking_user_auth_response["data"]
+    assert response.data.model_dump() == fake_response_post_booking_auth["data"]

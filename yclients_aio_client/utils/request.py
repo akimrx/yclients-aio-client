@@ -20,7 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 class AsyncWebClient(ApiRequestsStrategy):
-    """HTTP Web client based on aiohttp library."""
+    """HTTP Web client based on aiohttp library.
+    
+    Args:
+        timeout (int): API requests timeout.
+        raise_client_errors (bool): Raise exceptions for responses with 4xx HTTP-code.
+        parent (BaseClient): The parent class of the main facade, which is embedded (injected) in the response model
+                             to perform manipulations with itself, for example, to delete the received resource.
+    """
 
     def __init__(
         self,

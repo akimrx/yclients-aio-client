@@ -36,6 +36,20 @@ python3 setup.py install
 ## Getting started
 
 
+### Backoff strategy
+
+Each HTTP request, in case of failure, will be repeated a limited number of times, using an exponential backoff strategy with jitter.  
+The number of attempts, the delay time between them and the jitter range can be changed using environment variables.
+
+* `YCLIENTS_BACKOFF_MAX_TRIES` — Maximum number of total call attempts if the HTTP request failed
+* `YCLIENTS_BACKOFF_JITTER` — Enables jitter if True is passed
+* `YCLIENTS_BACKOFF_BASE_DELAY` – Basic delay between attempts (dynamic when jitter is on)
+* `YCLIENTS_BACKOFF_EXPO_FACTOR` – Multiplier for exponential backoff
+
+You can use an additional backoff for your methods through the decorator `yclients_aio_client.utils.decorators.backoff`, however, it is not necessary to decore already decorated default cases:
+* Internal Server Errors, i.e. 5xx HTTP-codes
+* Network Errors, i.e. DNS, connect and socket fails
+
 ### Sync usage
 If your code is synchronous and you don't want to use async for some reason, you can wrap the func calls with `asyncio.run`.  
 

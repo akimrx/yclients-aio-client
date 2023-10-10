@@ -8,7 +8,21 @@ logger = logging.getLogger(__name__)
 
 
 class AsyncYclientsClient(BaseClient):
-    """Facade for YCLIENTS API."""
+    """Asynchronous client for YCLIENTS API.
+
+    Args:
+        partner_token (str): Bearer token.
+        main_company_id (str): Default YCLIENTS company ID.
+        timeout (int): API requests timeout.
+        api_client (ApiRequestsStrategy): Strategy for make API requests, i.e. API Client.
+        raise_client_errors (bool): Raise exceptions for responses with 4xx HTTP-code.
+
+    Methods:
+        set_custom_global_headers (dict): Allows you to set the headers that will be used in each API request.
+
+    Injected clients (provided as property):
+        auth (YclientsAuthClient): Client for YCLIENTS authentication.
+    """
 
     def __init__(
         self,
