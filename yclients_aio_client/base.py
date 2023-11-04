@@ -1,6 +1,10 @@
-from abc import ABC, abstractmethod
+import logging
+
+from abc import ABC, abstractmethod, abstractproperty
 from pydantic import BaseModel, Field
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class ApiRequestsStrategy(ABC):
@@ -37,15 +41,30 @@ class BaseClient:
         partner_token: str | None = None,
         main_company_id: str | None = None,
         timeout: int = 5,
-        raise_client_erros: bool = True,
+        raise_client_errors: bool = True,
     ) -> None:
         self._api_client = api_client
         self._partner_token = partner_token
         self._main_company_id = main_company_id
 
+    @abstractmethod
+    def set_custom_global_headers(self, headers: dict) -> None:
+        """Method for global headers setting."""
+
+
+class BaseInjectedClient(ABC):
+    """Generic injected client for Base Client."""
+
+    def __init__(self, parent: BaseClient) -> None:
+        self._parent = parent
+
+    @abstractproperty
+    def _api(self) -> ApiRequestsStrategy:
+        """Shortcut for API requests strategy from parent BaseClient."""
+
 
 class YclientsGenericModel(BaseModel):
-    """Generic model for YCLIENTS API responses."""
+    """Generic model for YCLIENTS API HTTP-responses."""
 
     success: bool
     data: Any
@@ -55,3 +74,20 @@ class YclientsGenericModel(BaseModel):
     parent: Any = Field(
         ..., repr=False, exclude=True, init=False
     )  # hack: shortcut for self object manipulate via injected parent facade
+
+
+class BaseResponseDataModel(BaseModel):
+    """Base model for response data from YCLIENTS API."""
+
+    class Config:
+        extra = "ignore"
+
+    def __init__(self, **data):
+        extra_fields = set(data.keys()) - set(self.__fields__)
+        if extra_fields:
+            unspecified = ", ".join(extra_fields)
+            logger.warning(
+                f"Found fields that are not documented in the API specification. "
+                f"The following fields will be ignored: {unspecified}"
+            )
+        super().__init__(**data)

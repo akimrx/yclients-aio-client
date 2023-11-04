@@ -42,7 +42,7 @@ class AsyncYclientsClient(BaseClient):
         )
         self._api_client.set_auth_headers(partner_token=self._partner_token)
 
-    def set_custom_global_headers(self, headers: dict):
+    def set_custom_global_headers(self, headers: dict) -> None:
         """Shortcut for set global headers to API adapter."""
         return self._api_client.set_custom_global_headers(headers)
 

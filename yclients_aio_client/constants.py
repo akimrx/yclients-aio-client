@@ -14,7 +14,7 @@ ALLOWED_HTTP_METHODS = (
 
 
 class YclientsClientBackoffSettings(BaseSettings):
-    """Backoff settings for AsyncApiAdapter.
+    """Backoff settings for AsyncWebClient.
 
     Supports environment variables:
         * YCLIENTS_BACKOFF_MAX_TRIES=:type int:

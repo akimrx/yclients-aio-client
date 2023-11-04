@@ -1,7 +1,12 @@
 import yclients_aio_client.constants as c
 
-from yclients_aio_client.base import BaseClient, YclientsGenericModel
 from yclients_aio_client.utils.validators import validate_company_id
+from yclients_aio_client.base import (
+    BaseClient,
+    BaseInjectedClient,
+    YclientsGenericModel,
+    ApiRequestsStrategy,
+)
 from yclients_aio_client.yclients.auth.models import (
     YclientsBaseAuth,
     YclientsAuthResponse,
@@ -12,14 +17,14 @@ from yclients_aio_client.yclients.auth.models import (
 # TODO (akimrx): use pydantic models `FooPayload` instead `data`: dict ??
 
 
-class YclientsAuthClient(BaseClient):
+class YclientsAuthClient(BaseInjectedClient):
     """Web client for authentication in the YCLIENTS API."""
 
     def __init__(self, parent: BaseClient):
         self._parent = parent
 
     @property
-    def _api(self):
+    def _api(self) -> ApiRequestsStrategy:
         """Alias for API adapter."""
         return self._parent._api_client
 
