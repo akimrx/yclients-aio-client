@@ -1,7 +1,7 @@
 import logging
 
 from abc import ABC, abstractmethod, abstractproperty
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -79,11 +79,10 @@ class YclientsGenericModel(BaseModel):
 class BaseResponseDataModel(BaseModel):
     """Base model for response data from YCLIENTS API."""
 
-    class Config:
-        extra = "ignore"
+    model_config = ConfigDict(extra="ignore")
 
     def __init__(self, **data):
-        extra_fields = set(data.keys()) - set(self.__fields__)
+        extra_fields = set(data.keys()) - set(self.model_fields)
         if extra_fields:
             unspecified = ", ".join(extra_fields)
             logger.warning(
